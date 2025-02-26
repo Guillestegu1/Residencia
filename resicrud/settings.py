@@ -126,6 +126,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Ajusta si tu carpeta de estáticos tiene otro nombre o ubicación
 ]
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Esta línea puede tener la ruta que mencionas
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
