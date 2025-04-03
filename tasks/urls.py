@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import list_tasks, create_tasks, delete_task, register, home, user_login, user_logout, user_home, user_home1, index, buttons, cards, utilitiesanimation, utilitiesborder, utilitiescolor, utilitiesother, charts, tables, modulo1, modulo2
+from .views import list_tasks, create_tasks, delete_task, register, home, user_login, user_logout, user_home, user_home1, index, buttons, cards, utilitiesanimation, utilitiesborder, utilitiescolor, utilitiesother, charts, tables, modulo1, modulo2, test, results_view, save_score
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -23,6 +23,9 @@ urlpatterns = [
     path('new/', create_tasks, name='create_task'),
     path('tasks/', list_tasks),
     path('delete_task/<int:task_id>/', delete_task, name='delete_task'),
+    path('test/', test, name='test'),
+    path('save_score/', save_score, name='save_score'),
+    path('results/', results_view, name='results'),
 ]
 
 if settings.DEBUG:

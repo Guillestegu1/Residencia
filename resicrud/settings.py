@@ -77,14 +77,13 @@ WSGI_APPLICATION = 'resicrud.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'resi',
+        'NAME': 'residencia',
         'USER': 'postgres',
         'PASSWORD': 'Gu1ll3stegu1',
         'HOST': 'localhost',
         'POST': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -122,13 +121,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # Ajusta si tu carpeta de estáticos tiene otro nombre o ubicación
-]
+# STATICFILES_DIRS = [
+ #   BASE_DIR / 'tasks/static/',  # Ajusta si tu carpeta de estáticos tiene otro nombre o ubicación
+#]
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Esta línea puede tener la ruta que mencionas
+    BASE_DIR / "tasks/static",  # Esta línea puede tener la ruta que mencionas
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
