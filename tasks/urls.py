@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import list_tasks, create_tasks, delete_task, register, home, user_login, user_logout, user_home, user_home1, index, buttons, cards, utilitiesanimation, utilitiesborder, utilitiescolor, utilitiesother, charts, tables, modulo1, modulo2, test, results_view, save_score
+from .views import list_tasks, create_tasks, delete_task, register, home, user_login, user_logout, user_home, user_home1, index, buttons, cards, utilitiesanimation, utilitiesborder, utilitiescolor, utilitiesother, charts, tables, modulo1, modulo2, test, results_view, save_score, modulo3, modulo4, modulo5, modulo6, modulo7, modulo8
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -20,13 +20,22 @@ urlpatterns = [
     path('tables/', tables, name='tables'),
     path('modulo1/', modulo1, name='modulo1'),
     path('modulo2/', modulo2, name='modulo2'),
+    path('modulo3/', modulo3, name='modulo3'),
+    path('modulo4/', modulo4, name='modulo4'), 
+    path('modulo5/', modulo5, name='modulo5'),
+    path('modulo6/', modulo6, name='modulo6'),
+    path('modulo7/', modulo7, name='modulo7'),
+    path('modulo8/', modulo8, name='modulo8'),
     path('new/', create_tasks, name='create_task'),
     path('tasks/', list_tasks),
     path('delete_task/<int:task_id>/', delete_task, name='delete_task'),
     path('test/', test, name='test'),
     path('save_score/', save_score, name='save_score'),
     path('results/', results_view, name='results'),
+    
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

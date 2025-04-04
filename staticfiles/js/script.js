@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 let images = [];
 let correctImageIndex;
 let score = 0;
+let module = "memory_game"; // Define el módulo que se enviará al backend
 
 // Cargar imágenes
 function loadImages() {
@@ -11,7 +12,7 @@ function loadImages() {
     const img = new Image();
     img.src = `/static/images/${i}.png`;
     img.onload = () => console.log(`Imagen ${i} cargada`);
-    images.push({ img, x: 0, y: 0 }); // Guardamos imagen y posición
+    images.push({ img, x: 0, y: 0 });
   }
 }
 
@@ -21,12 +22,12 @@ function startGame() {
   loadImages();
   correctImageIndex = Math.floor(Math.random() * images.length);
   
-  // Mostrar una imagen al azar durante 3 segundos
+  // Mostrar imagen por 3 segundos
   setTimeout(() => drawSingleImage(), 500);
   setTimeout(showBlankScreen, 3500); // Después de 3 segundos
 }
 
-// Mostrar una imagen específica para recordar
+// Mostrar una imagen para recordar
 function drawSingleImage() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const image = images[correctImageIndex].img;
@@ -47,19 +48,16 @@ function showAllImages() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const size = 150;
 
-  // Dibujar las imágenes en una cuadrícula de 4x2
   for (let i = 0; i < images.length; i++) {
     const x = (i % 4) * size + 25;
     const y = Math.floor(i / 4) * size + 25;
     ctx.drawImage(images[i].img, x, y, size, size);
 
-    // Guardar coordenadas para la detección de clics
     images[i].x = x;
     images[i].y = y;
   }
 
-  // Activar clic para detectar respuesta
-  canvas.onclick = handleAnswer;
+  canvas.onclick = handleAnswer; // Activar detección de clics
 }
 
 // Comprobar si la imagen seleccionada es correcta
@@ -78,7 +76,7 @@ function handleAnswer(event) {
         score = 0;
         document.getElementById("message").innerText = "❌ Incorrecto. Era otra imagen.";
       }
-      sendScore(score);
+      sendScore(score, module);
       canvas.onclick = null; // Desactivar clics después de responder
       return;
     }
@@ -86,22 +84,27 @@ function handleAnswer(event) {
 }
 
 // Enviar la puntuación al backend
-function sendScore(score, module) {
+function sendScore(score) {
   fetch('/save_score/', {
-    method: 'POST',
-    body: JSON.stringify({ module: module, score: score }),
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-CSRFToken': getCSRFToken()  // Para seguridad CSRF
-    }
+      method: 'POST',
+      credentials: 'same-origin', // Para asegurar que se envíe la cookie CSRF
+      body: JSON.stringify({ module: "Memoria", score: score }),
+      headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRFToken()  // Obtener el token CSRF
+      }
   })
   .then(response => response.json())
   .then(data => {
-    console.log('Puntuación guardada:', data);
+      console.log('Respuesta del servidor:', data);
+  })
+  .catch(error => {
+      console.error('Error al enviar puntuación:', error);
   });
 }
 
 // Obtener token CSRF
 function getCSRFToken() {
-  return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
+  const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+  return cookie ? cookie.split('=')[1] : '';
 }

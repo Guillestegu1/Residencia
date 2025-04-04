@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
 from django.db import models
+from django.templatetags.static import static
 
 # Create your views here.
 def home(request):
@@ -115,10 +116,35 @@ def tables(request):
     return render(request, 'tables.html')
 
 def modulo1(request):
-    return render(request, 'modulo1.html')
+     imagenes = [
+        {'src': static('images/ima1.jpg'), 'descripcion': 'Esta es la primera imagen'},
+        {'src': static('images/ima2.jpg'), 'descripcion': 'Ahora ves la segunda imagen'},
+        {'src': static('images/ima3.jpg'), 'descripcion': 'Finalmente, la tercera imagen'},
+    ]
+     return render(request, 'modulo1.html', {
+        'imagenes_json': json.dumps(imagenes)  # Convierte la lista en JSON válido
+    })
 
 def modulo2(request):
     return render(request, 'modulo2.html')
+
+def modulo3(request):
+    return render(request, 'modulo3.html') 
+
+def modulo4(request):
+    return render(request, 'modulo4.html') 
+
+def modulo5(request):
+    return render(request, 'modulo5.html') 
+
+def modulo6(request):
+    return render(request, 'modulo6.html') 
+
+def modulo7(request):
+    return render(request, 'modulo7.html') 
+
+def modulo8(request):
+    return render(request, 'modulo8.html') 
 
 def list_tasks(request):
     tasks = Task.objects.all()
@@ -136,3 +162,4 @@ def delete_task(request, task_id):
 
 def test(request):
     return render(request, "test.html")
+

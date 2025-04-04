@@ -63,10 +63,16 @@
                     <span>Modulo 1</span>
                 </a>
             </li>
+            
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link load-content" data-url="{% url 'modulo2' %}" href="#">
                     <span>Modulo 2</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link load-content" data-url="{% url 'modulo3' %}" href="#">
+                    <span>Modulo 3</span>
                 </a>
             </li>
 
@@ -239,6 +245,55 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll(".load-content");
+    
+            links.forEach(link => {
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    const url = this.getAttribute("data-url");
+    
+                    fetch(url)
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("dynamic-content").innerHTML = data;
+    
+                            // Aquí está la parte crítica: ejecutamos el código para cambiar la imagen
+                            // de nuevo después de cargar el contenido dinámico.
+                            configurarCambioDeImagen();  // Llamamos a la función para cambiar la imagen
+                        })
+                        .catch(error => console.error("Error al cargar el contenido:", error));
+                });
+            });
+    
+            // Aquí incluimos la lógica para cambiar la imagen
+            function configurarCambioDeImagen() {
+                const imagenes = [
+                    { src: "{% static 'images/ima1.jpg' %}", descripcion: "Esta es la primera imagen" },
+                    { src: "{% static 'images/ima2.jpg' %}", descripcion: "Ahora ves la segunda imagen" },
+                    { src: "{% static 'images/ima3.jpg' %}", descripcion: "Esta es la tercera imagen" }
+                ];
+    
+                let indiceActual = 0;
+                const imgElement = document.getElementById("imagenPrincipal");
+                const descElement = document.getElementById("descripcion");
+    
+                if (imgElement) {
+                    imgElement.addEventListener("click", function() {
+                        // Cambiar al siguiente índice
+                        indiceActual = (indiceActual + 1) % imagenes.length;
+                        imgElement.setAttribute("src", imagenes[indiceActual].src);
+                        descElement.textContent = imagenes[indiceActual].descripcion;
+                    });
+                }
+            }
+    
+            // Llamamos a la función de configuración inicial cuando la página cargue por primera vez
+            configurarCambioDeImagen();
+        });
+    </script>
+    
 </body>
 
 </html>
