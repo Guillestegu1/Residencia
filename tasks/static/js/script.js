@@ -1,52 +1,71 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-let images = [];
-let correctImageIndex;
-let score = 0;
-let module = "memory_game"; // Define el módulo que se enviará al backend
 
-// Cargar imágenes
+
+let images = [];
+let correctImage;
+let round = 0;
+let score = 0;
+let totalScore = 0;
+let module = "Modulo 1";
+
 function loadImages() {
   images = [];
   for (let i = 1; i <= 8; i++) {
     const img = new Image();
     img.src = `/static/images/${i}.png`;
-    img.onload = () => console.log(`Imagen ${i} cargada`);
     images.push({ img, x: 0, y: 0 });
   }
 }
 
-// Iniciar el juego
 function startGame() {
+  round = 0;
   score = 0;
+  totalScore = 0;
   loadImages();
-  correctImageIndex = Math.floor(Math.random() * images.length);
-  
-  // Mostrar imagen por 3 segundos
-  setTimeout(() => drawSingleImage(), 500);
-  setTimeout(showBlankScreen, 3500); // Después de 3 segundos
+  nextRound();
 }
 
-// Mostrar una imagen para recordar
+function nextRound() {
+  if (round < 5) {
+    round++;
+    updateRoundDisplay();
+
+    // Selecciona la imagen correcta antes de barajar
+    correctImage = images[Math.floor(Math.random() * images.length)];
+
+    setTimeout(() => drawSingleImage(), 500);
+    setTimeout(showBlankScreen, 3500);
+  } else {
+    sendScore(totalScore, module);
+    document.getElementById("message").innerText += `\n🏁 Juego completado. Puntaje total: ${totalScore}`;
+    document.getElementById("nextButton").style.display = "inline-block";
+    document.getElementById("roundCounter").innerText = "✔ Rondas completadas";
+  }
+}
+
+function updateRoundDisplay() {
+  const counter = document.getElementById("roundCounter");
+  counter.innerText = `Ronda ${round} de 5`;
+}
+
 function drawSingleImage() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const image = images[correctImageIndex].img;
-  ctx.drawImage(image, 225, 225, 150, 150);
+  ctx.drawImage(correctImage.img, 225, 225, 150, 150);
 }
 
-// Mostrar pantalla negra
 function showBlankScreen() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  setTimeout(showAllImages, 1000); // Después de 1 segundo
+  setTimeout(showAllImages, 1000);
 }
 
-// Mostrar todas las imágenes para seleccionar
 function showAllImages() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const size = 150;
+
+  shuffleArray(images); // Mezcla las imágenes antes de mostrarlas
 
   for (let i = 0; i < images.length; i++) {
     const x = (i % 4) * size + 25;
@@ -57,53 +76,65 @@ function showAllImages() {
     images[i].y = y;
   }
 
-  canvas.onclick = handleAnswer; // Activar detección de clics
+  canvas.onclick = handleAnswer;
 }
 
-// Comprobar si la imagen seleccionada es correcta
 function handleAnswer(event) {
   const clickX = event.offsetX;
   const clickY = event.offsetY;
   const size = 150;
 
   for (let i = 0; i < images.length; i++) {
-    const { x, y } = images[i];
+    const { x, y, img } = images[i];
     if (clickX >= x && clickX <= x + size && clickY >= y && clickY <= y + size) {
-      if (i === correctImageIndex) {
+      if (img === correctImage.img) {
         score = 100;
-        document.getElementById("message").innerText = "✅ ¡Correcto! Ganaste 100 puntos.";
+        document.getElementById("message").innerText = `✅ Correcto (+100 puntos)`;
       } else {
         score = 0;
-        document.getElementById("message").innerText = "❌ Incorrecto. Era otra imagen.";
+        document.getElementById("message").innerText = `❌ Incorrecto (0 puntos)`;
       }
-      sendScore(score, module);
-      canvas.onclick = null; // Desactivar clics después de responder
+
+      totalScore += score;
+      canvas.onclick = null;
+
+      setTimeout(() => {
+        document.getElementById("message").innerText = "";
+        nextRound();
+      }, 3000);
+
       return;
     }
   }
 }
 
-// Enviar la puntuación al backend
-function sendScore(score) {
-  fetch('/save_score/', {
-      method: 'POST',
-      credentials: 'same-origin', // Para asegurar que se envíe la cookie CSRF
-      body: JSON.stringify({ module: "Memoria", score: score }),
-      headers: { 
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCSRFToken()  // Obtener el token CSRF
-      }
-  })
-  .then(response => response.json())
-  .then(data => {
-      console.log('Respuesta del servidor:', data);
-  })
-  .catch(error => {
-      console.error('Error al enviar puntuación:', error);
-  });
+// 🔁 Mezcla un array (Fisher-Yates Shuffle)
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
 
-// Obtener token CSRF
+function sendScore(score, module) {
+  fetch('/save_score/', {
+    method: 'POST',
+    credentials: 'same-origin',
+    body: JSON.stringify({ module: module, score: score }),
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCSRFToken()
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Puntuación enviada:', data);
+    })
+    .catch(error => {
+      console.error('Error al enviar puntuación:', error);
+    });
+}
+
 function getCSRFToken() {
   const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
   return cookie ? cookie.split('=')[1] : '';

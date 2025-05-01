@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.db import models
 from django.templatetags.static import static
+from collections import defaultdict
 
 # Create your views here.
 def home(request):
@@ -80,6 +81,17 @@ def results_view(request):
     scores = Score.objects.filter(user=request.user).order_by('-date')  # Últimos puntajes primero
     return render(request, 'results.html', {'scores': scores})
 
+@login_required
+def resultados(request):
+    user_scores = Score.objects.filter(user=request.user).order_by('module', '-date')
+    scores_by_module = defaultdict(list)
+    for score in user_scores:
+        scores_by_module[score.module].append(score)
+    
+    return render(request, 'resultados.html', {
+        'scores_by_module': dict(scores_by_module)
+    })
+
 def user_logout(request):
     logout(request)
     return redirect('home')
@@ -116,14 +128,7 @@ def tables(request):
     return render(request, 'tables.html')
 
 def modulo1(request):
-     imagenes = [
-        {'src': static('images/ima1.jpg'), 'descripcion': 'Esta es la primera imagen'},
-        {'src': static('images/ima2.jpg'), 'descripcion': 'Ahora ves la segunda imagen'},
-        {'src': static('images/ima3.jpg'), 'descripcion': 'Finalmente, la tercera imagen'},
-    ]
-     return render(request, 'modulo1.html', {
-        'imagenes_json': json.dumps(imagenes)  # Convierte la lista en JSON válido
-    })
+    return render(request, 'modulo1.html')
 
 def modulo2(request):
     return render(request, 'modulo2.html')
@@ -163,3 +168,9 @@ def delete_task(request, task_id):
 def test(request):
     return render(request, "test.html")
 
+def submodulo1(request):
+    return render(request, 'submodulo1.html')
+def base2(request):
+    return render(request, 'base2.html')
+def tablas(request):
+    return render(request, 'tablas.html')

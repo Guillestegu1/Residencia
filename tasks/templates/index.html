@@ -40,7 +40,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">
+                <a class="nav-link" href="{% url 'resultados' %}">
                     <span>Interface</span>
                 </a>
             </li>
@@ -59,26 +59,21 @@
                 Interface
             </div> -->
             <li class="nav-item">
-                <a class="nav-link load-content" data-url="{% url 'modulo1' %}" href="#">
+                <a class="nav-link" href="{% url 'test' %}">
                     <span>Modulo 1</span>
                 </a>
             </li>
             
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link load-content" data-url="{% url 'modulo2' %}" href="#">
+                <a class="nav-link" href="{% url 'modulo2' %}">
                     <span>Modulo 2</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link load-content" data-url="{% url 'modulo3' %}" href="#">
-                    <span>Modulo 3</span>
                 </a>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'tables' %}">
+                <a class="nav-link" href="{% url 'modulo3' %}">
                     <span>Modulo 3</span>
                 </a>
             </li>
@@ -108,32 +103,32 @@
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'charts' %}">
+                <a class="nav-link" href="{% url 'modulo4' %}">
                     <span>Modulo 4</span>
                 </a>
             </li>
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'tables' %}">
+                <a class="nav-link" href="{% url 'modulo5' %}">
                     <span>Modulo 5</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'tables' %}">
+                <a class="nav-link" href="{% url 'modulo6' %}">
                     <span>Modulo 6</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'tables' %}">
+                <a class="nav-link" href="{% url 'modulo7' %}">
                     <span>Modulo 7</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'tables' %}">
+                <a class="nav-link" href="{% url 'modulo8' %}">
                     <span>Modulo 8</span>
                 </a>
             </li>
@@ -160,18 +155,22 @@
                 
                     <!-- Contenedor de los botones alineados a la derecha -->
                     <div class="ml-auto d-flex align-items-center">
+                        <div class="topbar" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+                            <div class="welcome-text" style="margin-right: 20px; font-size: 1.2rem; color: #333;">
+                                Bienvenido, {{ request.user.username }}
+                            </div>
                         <!-- Botones 
                         <a href="{% url 'login' %}" class="btn btn-primary mr-2">Login</a>
                         <a href="{% url 'signup' %}" class="btn btn-secondary mr-2">Register</a> -->
-                        <a href="{% url 'signup' %}" class="btn btn-danger btn-sm">Logout</a>
+                        <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
                     </div>
                 </nav>
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">{{request.user.username}}</h1>
+                    <!-- Page Heading  <h1 class="h3 mb-4 text-gray-800">{{request.user.username}}</h1> -->
+                    
                 </div>
                     <script>
                         document.addEventListener("DOMContentLoaded", function() {
@@ -192,7 +191,8 @@
                             });
                         });
                         </script>
-                
+                {% block content %}
+                {% endblock %}
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
@@ -245,54 +245,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const links = document.querySelectorAll(".load-content");
-    
-            links.forEach(link => {
-                link.addEventListener("click", function(event) {
-                    event.preventDefault();
-                    const url = this.getAttribute("data-url");
-    
-                    fetch(url)
-                        .then(response => response.text())
-                        .then(data => {
-                            document.getElementById("dynamic-content").innerHTML = data;
-    
-                            // Aquí está la parte crítica: ejecutamos el código para cambiar la imagen
-                            // de nuevo después de cargar el contenido dinámico.
-                            configurarCambioDeImagen();  // Llamamos a la función para cambiar la imagen
-                        })
-                        .catch(error => console.error("Error al cargar el contenido:", error));
-                });
-            });
-    
-            // Aquí incluimos la lógica para cambiar la imagen
-            function configurarCambioDeImagen() {
-                const imagenes = [
-                    { src: "{% static 'images/ima1.jpg' %}", descripcion: "Esta es la primera imagen" },
-                    { src: "{% static 'images/ima2.jpg' %}", descripcion: "Ahora ves la segunda imagen" },
-                    { src: "{% static 'images/ima3.jpg' %}", descripcion: "Esta es la tercera imagen" }
-                ];
-    
-                let indiceActual = 0;
-                const imgElement = document.getElementById("imagenPrincipal");
-                const descElement = document.getElementById("descripcion");
-    
-                if (imgElement) {
-                    imgElement.addEventListener("click", function() {
-                        // Cambiar al siguiente índice
-                        indiceActual = (indiceActual + 1) % imagenes.length;
-                        imgElement.setAttribute("src", imagenes[indiceActual].src);
-                        descElement.textContent = imagenes[indiceActual].descripcion;
-                    });
-                }
-            }
-    
-            // Llamamos a la función de configuración inicial cuando la página cargue por primera vez
-            configurarCambioDeImagen();
-        });
-    </script>
     
 </body>
 

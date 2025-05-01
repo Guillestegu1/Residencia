@@ -1,0 +1,37 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<body>
+    <div class="container">
+        <h1 class="mt-5">Historial de Puntajes por Módulo</h1>
+
+        {% if scores_by_module %}
+            {% for module, scores in scores_by_module.items %}
+            <div class="mb-5">
+                <h3 class="text-primary">{{ module }}</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Puntaje</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for score in scores %}
+                        <tr>
+                            <td>{{ score.score }}</td>
+                            <td>{{ score.date|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay puntajes registrados.</p>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+{% endblock %}
