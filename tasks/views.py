@@ -10,6 +10,7 @@ import json
 from django.db import models
 from django.templatetags.static import static
 from collections import defaultdict
+from django.utils import timezone
 
 # Create your views here.
 def home(request):
@@ -45,47 +46,41 @@ def user_login(request):
 
     return render(request, 'login.html')
 
-@csrf_exempt 
+@login_required 
 def save_score(request):
     if request.method == 'POST':
-        try:
-            # Leer datos del cuerpo de la solicitud
-            data = json.loads(request.body)
-            print("📥 Datos recibidos en Django:", data)  # 🛠️ Ver en la terminal
+        data = json.loads(request.body)
+        module = data.get('module')
+        score_value = data.get('score')
 
-            module = data.get('module')
-            score_value = data.get('score')
+        puntaje_maximo = 500 # <-- usa el valor real que corresponda
+        percentage = (score_value / puntaje_maximo) * 100
 
-            # Verificar si los datos son correctos
-            if module is None or score_value is None:
-                print("❌ Error: Datos inválidos en la solicitud")
-                return JsonResponse({'status': 'error', 'message': 'Datos inválidos'}, status=400)
+        Score.objects.create(
+            user=request.user,
+            module=module,
+            score=score_value,
+            percentage=percentage,
+            date=timezone.now()
+        )
 
-            # Verificar si el usuario está autenticado
-            if request.user.is_authenticated:
-                Score.objects.create(user=request.user, module=module, score=score_value)
-                print("✅ Puntuación guardada correctamente")
-                return JsonResponse({'status': 'success', 'message': 'Puntaje guardado correctamente'})
-            else:
-                print("❌ Error: Usuario no autenticado")
-                return JsonResponse({'status': 'error', 'message': 'Usuario no autenticado'}, status=403)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
 
-        except json.JSONDecodeError as e:
-            print("❌ Error de JSON:", str(e))
-            return JsonResponse({'status': 'error', 'message': 'Error de JSON: ' + str(e)}, status=400)
-    
-    return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
-
-@csrf_exempt
+@login_required
 def results_view(request):
     scores = Score.objects.filter(user=request.user).order_by('-date')  # Últimos puntajes primero
     return render(request, 'results.html', {'scores': scores})
 
 @login_required
 def resultados(request):
+    puntaje_maximo = 500  # <-- cambia esto si tu máximo es diferente
+
     user_scores = Score.objects.filter(user=request.user).order_by('module', '-date')
     scores_by_module = defaultdict(list)
     for score in user_scores:
+        porcentaje = (score.score / puntaje_maximo) * 100
+        score.porcentaje = round(porcentaje, 2)  # Agregamos atributo temporal
         scores_by_module[score.module].append(score)
     
     return render(request, 'resultados.html', {

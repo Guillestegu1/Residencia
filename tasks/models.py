@@ -10,6 +10,7 @@ class Score(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default= 1)  # Relación con usuario
     module = models.CharField(max_length=100)  # Nombre del módulo (1-8)
     score = models.IntegerField()  # Puntaje obtenido
+    percentage = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)  # Fecha en la que se guardó el puntaje
 
     def __str__(self):
