@@ -76,12 +76,17 @@ function showBlankScreen() {
 function showAllImages() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const size = 100;
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = 200;
 
-  shuffleArray(images);
+  shuffleArray(images); // Mezcla antes de asignar
 
   for (let i = 0; i < images.length; i++) {
-    const x = Math.floor(Math.random() * (canvas.width - size));
-    const y = Math.floor(Math.random() * (canvas.height - size));
+    const angle = (i * (2 * Math.PI)) / images.length; // ángulo en radianes
+    const x = centerX + radius * Math.cos(angle) - size / 2;
+    const y = centerY + radius * Math.sin(angle) - size / 2;
+
     ctx.drawImage(images[i].img, x, y, size, size);
 
     images[i].x = x;
@@ -90,17 +95,17 @@ function showAllImages() {
     images[i].height = size;
   }
 
-  // 🟩 Muestra barra de progreso llena y empieza a vaciar
+  // Barra de progreso
   const progressBar = document.getElementById("progressBar");
-  progressBar.style.transition = "none"; // reinicia transición
+  progressBar.style.transition = "none";
   progressBar.style.width = "100%";
-  void progressBar.offsetWidth; // reflow
+  void progressBar.offsetWidth;
   progressBar.style.transition = "width 3s linear";
   progressBar.style.width = "0%";
 
   canvas.onclick = handleAnswer;
 
-  // ⏱️ Tiempo límite para responder
+  // Tiempo límite
   responseTimeout = setTimeout(() => {
     score = 0;
     document.getElementById("message").innerText = `⏱️ Tiempo agotado (0 puntos)`;
@@ -108,7 +113,6 @@ function showAllImages() {
 
     setTimeout(() => {
       document.getElementById("message").innerText = "";
-      progressBar.style.width = "0%";
       nextRound();
     }, 1000);
   }, 3000);
