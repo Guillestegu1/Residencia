@@ -1,4 +1,4 @@
-{%extends 'index.html' %}
+{% extends 'index.html' %}
 {% load static %}
 {% block content %}
 <!DOCTYPE html>
@@ -29,12 +29,23 @@
                         {% for score in scores %}
                         <tr>
                             <td>{{ score.score }}</td>
-                            <td>{{ score.porcentaje }}%</td>
+                            <td>{{ score.percentage }}%</td>
                             <td>{{ score.date|date:"d/m/Y H:i" }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+
+                <!-- Mostrar porcentaje promedio por filas pares e impares -->
+                {% for resumen in porcentajes_modulares %}
+                    {% if resumen.module == module %}
+                        <div class="alert alert-info">
+                            <strong>Promedios:</strong><br>
+                            ▪️ Antes de las Pruebas: {{ resumen.pares }}%<br>
+                            ▪️ Después de las Pruebas: {{ resumen.impares }}%
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
             {% endfor %}
         {% else %}

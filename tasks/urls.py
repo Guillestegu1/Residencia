@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import list_tasks, create_tasks, delete_task, register, home, user_login, user_logout, user_home, user_home1, index, buttons, cards, utilitiesanimation, utilitiesborder, utilitiescolor, utilitiesother, charts, tables, modulo1, modulo2, test, results_view, save_score, modulo3, modulo4, modulo5, modulo6, modulo7, modulo8, submodulo1, base2, tablas, resultados
+from .views import list_tasks, create_tasks, delete_task, register, home, user_login, user_logout, user_home, user_home1, index, buttons, cards, utilitiesanimation, utilitiesborder, utilitiescolor, utilitiesother, charts, tables, modulo1, modulo2, test, results_view, save_score, modulo3, modulo4, modulo5, modulo6, modulo7, modulo8, submodulo1, base2, tablas, resultados, submodulo2, submodulo3, submodulo4, submodulo5, submodulo6, submodulo7, submodulo8
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -36,6 +36,13 @@ urlpatterns = [
     path('base2/', base2, name='base2'),
     path('tablas/', tablas, name='tablas'),
     path('resultados/', resultados, name='resultados'),
+    path('submodulo2/', submodulo2, name='submodulo2'),
+    path('submodulo3/', submodulo3, name='submodulo3'), 
+    path('submodulo4/', submodulo4, name='submodulo4'),
+    path('submodulo5/', submodulo5, name='submodulo5'),
+    path('submodulo6/', submodulo6, name='submodulo6'),
+    path('submodulo7/', submodulo7, name='submodulo7'),
+    path('submodulo8/', submodulo8, name='submodulo8'),
     
 ]
 if settings.DEBUG:

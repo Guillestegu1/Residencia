@@ -1,0 +1,101 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Modulo 7</h1>
+
+<style>
+    .image-slider {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        height: 350px;
+        overflow: hidden;
+        margin: auto;
+        text-align: center;
+        display: flex;
+        justify-content: center; /* Centra las imágenes horizontalmente */
+        align-items: center; /* Centra las imágenes verticalmente */
+    }
+
+    .image-slider img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.6s ease-in-out;
+    }
+
+    .image-slider img.active {
+        opacity: 1;
+        z-index: 1;
+    }
+
+    .image-slider img.hidden {
+        z-index: 0;
+    }
+
+    /* Estilo del texto */
+    .image-text {
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        white-space: pre-line; /* Esto mantiene los saltos de línea en el texto */
+        line-height: 1.5; /* Espaciado entre las líneas */
+    }
+</style>
+
+<!-- Contenedor de imágenes -->
+<div class="image-slider" onclick="nextImage()">
+    <img src="{% static 'images/modulo71.jpg' %}" class="active" alt="Imagen 1">
+    <img src="{% static 'images/modulo72.jpg' %}" class="hidden" alt="Imagen 2">
+    <img src="{% static 'images/modulo73.jpg' %}" class="hidden" alt="Imagen 3">
+    <img src="{% static 'images/modulo74.jpg' %}" class="hidden" alt="Imagen 4">
+    <img src="{% static 'images/modulo75.jpg' %}" class="hidden" alt="Imagen 5">
+</div>
+
+<!-- Texto debajo de la imagen -->
+<p id="imageText" class="image-text">Texto de la Imagen 1</p>
+
+<script>
+    let index = 0;
+
+    // Lista de textos correspondientes a cada imagen
+    const imageTexts = [
+        " 1.- consiga Una cuerda o cordón grueso de aproximadamente 10 a 15 pies de largo y 3 cuentas de diferentes colores, generalmente rojas, amarillas y verdes. ",
+ 
+        " 2.- Configuracion: Haz un nudo en el extremo de ambos cordones blancos. Fije un extremo de la cuerda al pomo de una puerta. Coloque la cuenta más alejada cerca del extremo de la cuerda, más cerca del pomo de la puerta. Esta es la cuenta de fijación más alejada. Coloque la cuenta de fijación del medio a una distancia de entre 2 y 5 pies de usted. Coloque la perla de fijación cercana a aproximadamente 6 pulgadas de su nariz. Colócate frente al pomo de la puerta, de frente. Pasa el lazo alrededor de tu dedo índice y sujeta el cordón blanco bajo tu nariz como un bigote. Sostenga el cordón a la altura del puente de su nariz de manera que quede bien estirado entre su nariz y el pomo de la puerta. ",
+
+        " 3.- Observe la perla de fijación cercana. Mantenga esta perla única mientras la mira directamente. Si la perla cercana es doble, esto indica un problema de coordinación ocular. Si esto ocurre, acerque o aleje la perla cercana hasta que la vea como una sola perla. Acerque la perla cercana a medida que la tarea se vuelve más fácil. La cuenta verde debe aparecer sola y el hilo formará una V ancha. Tanto la cuenta amarilla como la roja aparecerán ligeramente borrosas y duplicadas. Intenta ser consciente de otros objetos en la periferia o en tu campo de visión mientras practicas. " ,
+
+        " 4.-Luego, procede a observar la cuenta central (amarilla). Esta debe aparecer sola y el hilo debe formar una X a través de ella. Tanto la cuenta verde como la roja aparecerán ligeramente borrosas y duplicadas. ",
+
+        " 5.- Despues, procede a observar la cuenta más alejada (roja). La cuenta roja debe aparecer sola y el hilo debe formar una V Invertida a través de ella. Tanto la cuenta verde como la amarilla aparecerán ligeramente borrosas y duplicadas. "
+        
+    ];
+
+    function nextImage() {
+        const images = document.querySelectorAll('.image-slider img');
+        const textElement = document.getElementById('imageText');
+
+        // Ocultar imagen actual
+        images[index].classList.remove('active');
+        images[index].classList.add('hidden');
+
+        // Pasar a la siguiente imagen
+        index = (index + 1) % images.length;
+
+        // Mostrar nueva imagen
+        images[index].classList.add('active');
+        images[index].classList.remove('hidden');
+
+        // Cambiar el texto
+        textElement.innerText = imageTexts[index];
+    }
+</script>
+
+    <a href="{% url 'modulo7' %}" class="btn btn-primary mx-2">Siguiente</a>
+
+{% endblock %}

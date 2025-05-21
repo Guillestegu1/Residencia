@@ -1,7 +1,8 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block content %}
-<h1>Prueba</h1>
+
+<h1>Modulo 2</h1>
 
 <style>
     .image-slider {
@@ -48,9 +49,9 @@
 
 <!-- Contenedor de imágenes -->
 <div class="image-slider" onclick="nextImage()">
-    <img src="{% static 'images/ima1.jpg' %}" class="active" alt="Imagen 1">
-    <img src="{% static 'images/ima2.jpg' %}" class="hidden" alt="Imagen 2">
-    <img src="{% static 'images/ima3.jpg' %}" class="hidden" alt="Imagen 3">
+    <img src="{% static 'images/modulo21.jpg' %}" class="active" alt="Imagen 1">
+    <img src="{% static 'images/modulo22.jpg' %}" class="hidden" alt="Imagen 2">
+    <img src="{% static 'images/modulo23.jpg' %}" class="hidden" alt="Imagen 3">
 </div>
 
 <!-- Texto debajo de la imagen -->
@@ -61,11 +62,11 @@
 
     // Lista de textos correspondientes a cada imagen
     const imageTexts = [
-        "1.- Siéntate cómodamente y apoya tus codos en la mesa.\n2.- Frota tus manos entre ellas unos segundos",
+        " 1.-Cierra los ojos para enseñar a los párpados a tocarse y Haz una pausa contando hasta 2 para reforzar que los párpados se toquen",
  
-        "3.- Cierra los ojos y coloca las palmas de tus manos sobre ellos, de forma que quede un espacio hueco y cerrado.\n4.- Relaja tu mente, procurando no desviarte en pensamientos.",
+        " 2.- Apriete ligeramente hacia abajo los parpados contando hasta 2 para ayudar a desarrollar los músculos y estimular las vías neurales que controlan la fase descendente del parpadeo. ",
 
-        "5.- Observa detenidamente la oscuridad de tus párpados."
+        " 3.- Abrir los ojos a la cuenta de 2 para completar la secuencia de parpadeo y repita el ejercicio de nuevo y vuelva a realizarlo despues de 10 minutos. "
     ];
 
     function nextImage() {
@@ -88,10 +89,6 @@
     }
 </script>
 
-
-
-
-   
-    <a href="{% url 'modulo1' %}" class="btn btn-primary mx-2">Siguiente</a>
+    <a href="{% url 'modulo2' %}" class="btn btn-primary mx-2">Siguiente</a>
     
 {% endblock %}

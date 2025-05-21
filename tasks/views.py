@@ -69,23 +69,43 @@ def save_score(request):
 
 @login_required
 def results_view(request):
-    scores = Score.objects.filter(user=request.user).order_by('-date')  # Últimos puntajes primero
+    scores = Score.objects.filter(user=request.user).order_by('-date')  
     return render(request, 'results.html', {'scores': scores})
 
 @login_required
 def resultados(request):
-    puntaje_maximo = 500  # <-- cambia esto si tu máximo es diferente
+    puntaje_maximo = 500
 
     user_scores = Score.objects.filter(user=request.user).order_by('module', '-date')
     scores_by_module = defaultdict(list)
+
+    # Agrupar por módulo y agregar atributo temporal de porcentaje
     for score in user_scores:
-        porcentaje = (score.score / puntaje_maximo) * 100
-        score.porcentaje = round(porcentaje, 2)  # Agregamos atributo temporal
+        score.porcentaje = round((score.score / puntaje_maximo) * 100, 2)
         scores_by_module[score.module].append(score)
-    
+
+    # Calcular promedio por pares e impares por módulo
+    porcentajes_modulares = []
+    for module, scores in scores_by_module.items():
+        scores_ordered = list(reversed(scores))  # Orden cronológico
+
+        pares = scores_ordered[1::2]  # Índices 1, 3, ...
+        impares = scores_ordered[0::2]  # Índices 0, 2, ...
+
+        def promedio(qs):
+            return round(sum(s.porcentaje for s in qs) / len(qs), 2) if qs else 0
+
+        porcentajes_modulares.append({
+            'module': module,
+            'pares': promedio(pares),
+            'impares': promedio(impares),
+        })
+
     return render(request, 'resultados.html', {
-        'scores_by_module': dict(scores_by_module)
+        'scores_by_module': dict(scores_by_module),
+        'porcentajes_modulares': porcentajes_modulares
     })
+
 
 def user_logout(request):
     logout(request)
@@ -165,6 +185,20 @@ def test(request):
 
 def submodulo1(request):
     return render(request, 'submodulo1.html')
+def submodulo2(request):
+    return render(request, 'submodulo2.html')
+def submodulo3(request):
+    return render(request, 'submodulo3.html')
+def submodulo4(request):
+    return render(request, 'submodulo4.html')
+def submodulo5(request):
+    return render(request, 'submodulo5.html')
+def submodulo6(request):
+    return render(request, 'submodulo6.html')
+def submodulo7(request):
+    return render(request, 'submodulo7.html')
+def submodulo8(request):
+    return render(request, 'submodulo8.html')
 def base2(request):
     return render(request, 'base2.html')
 def tablas(request):
